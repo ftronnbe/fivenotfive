@@ -20,7 +20,7 @@ struct ValidatedObservation {
 class ViewController: UIViewController {
 
     let receiverKeywords = ["bankgiro", "postgiro", "mottagare"]
-    let ocrKeywords = ["ocr-nummer", "ocr"]
+    let ocrKeywords = ["ocr-nummer", "ocr", "ocr/fakturanummer"]
 
     let receiverRegularExpressionLiteral = #"\b([0-9,-]{8,})\b"#
     let ocrRegularExpressionLiteral = #"\b([0-9]{8,})\b"#
@@ -44,6 +44,7 @@ class ViewController: UIViewController {
 
                 // Filter out OCR
                 let ocrKeywordObservations = self.findObservations(matchingKeywords: self.ocrKeywords, among: observations)
+
                 var validatedOcrObservations: [ValidatedObservation] = []
                 for ocrKeywordObservation in ocrKeywordObservations {
                     let closestObservationToRight = self.findObservationClosestToTheRight(of: ocrKeywordObservation, among: observations)
@@ -153,7 +154,7 @@ class ViewController: UIViewController {
             }
 
             // Skip observations not on the same vertical line
-            if abs(observation.bottomLeft.x - bottomLeft.x) > 0.001 {
+            if abs(observation.bottomLeft.x - bottomLeft.x) > 0.01 {
                 continue
             }
 
@@ -162,7 +163,7 @@ class ViewController: UIViewController {
                 continue
             }
 
-            let distance = observation.bottomLeft.y - bottomLeft.y
+            let distance = bottomLeft.y - observation.bottomLeft.y
             if distance < shortestDistanceBelow {
                 shortestDistanceBelow = distance
                 closestObservationBelow = observation
