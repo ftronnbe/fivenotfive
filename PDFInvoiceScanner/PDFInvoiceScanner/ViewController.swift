@@ -21,9 +21,12 @@ class ViewController: UIViewController {
 
     let receiverKeywords = ["bankgiro", "postgiro", "mottagare", "bankgiro:"]
     let ocrKeywords = ["ocr-nummer", "ocr", "ocr/fakturanummer"]
+    let dueDateKeywords = ["förfallodatum", "förfallodatum:", "förfallodag", "förfallodag:",
+                           "forfallodatum", "forfallodatum:", "forfallodag", "forfallodag:"]
 
     let receiverRegex = #"\b([0-9,-]{8,})\b"#
     let ocrRegex = #"\b([0-9]{8,})\b"#
+    let dueDateRegex = #"\b([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))\b"#
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,8 +44,14 @@ class ViewController: UIViewController {
                                                                           matching: self.ocrKeywords,
                                                                           regexLiteral: self.ocrRegex)
 
+                // Filter out due date
+                let validatedDueDateObservations = self.validatedObservations(among: observations,
+                                                                              matching: self.dueDateKeywords,
+                                                                              regexLiteral: self.dueDateRegex)
+
                 print("Possible receivers: \(validatedReceiverObservations.map { $0.text })")
                 print("Possible ocr: \(validatedOcrObservations.map { $0.text })")
+                print("Possible due dates: \(validatedDueDateObservations.map { $0.text })")
 
             }
         }
