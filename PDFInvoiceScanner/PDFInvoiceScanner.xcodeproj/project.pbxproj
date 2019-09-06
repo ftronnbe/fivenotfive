@@ -14,6 +14,7 @@
 		792D697423217D1600482F8A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 792D697323217D1600482F8A /* Assets.xcassets */; };
 		792D697723217D1600482F8A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 792D697523217D1600482F8A /* LaunchScreen.storyboard */; };
 		792D697F23217D8400482F8A /* sc.png in Resources */ = {isa = PBXBuildFile; fileRef = 792D697E23217D8400482F8A /* sc.png */; };
+		7999C9D82322E27200DC496B /* PDFScannerUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7999C9D72322E27200DC496B /* PDFScannerUtility.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		792D697623217D1600482F8A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		792D697823217D1600482F8A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		792D697E23217D8400482F8A /* sc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sc.png; sourceTree = "<group>"; };
+		7999C9D72322E27200DC496B /* PDFScannerUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFScannerUtility.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 				792D696A23217D1400482F8A /* AppDelegate.swift */,
 				792D696C23217D1400482F8A /* SceneDelegate.swift */,
 				792D696E23217D1400482F8A /* ViewController.swift */,
+				7999C9D72322E27200DC496B /* PDFScannerUtility.swift */,
 				792D697E23217D8400482F8A /* sc.png */,
 				792D697023217D1400482F8A /* Main.storyboard */,
 				792D697323217D1600482F8A /* Assets.xcassets */,
@@ -144,6 +147,7 @@
 			files = (
 				792D696F23217D1400482F8A /* ViewController.swift in Sources */,
 				792D696B23217D1400482F8A /* AppDelegate.swift in Sources */,
+				7999C9D82322E27200DC496B /* PDFScannerUtility.swift in Sources */,
 				792D696D23217D1400482F8A /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
