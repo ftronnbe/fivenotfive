@@ -75,7 +75,7 @@ class ViewController: UIViewController {
         textRecognitionRequest.recognitionLevel = .accurate
         textRecognitionRequest.usesLanguageCorrection = false
 
-        guard let cgImage = UIImage(named: "fakturabild1_ftg.jpg")?.cgImage else {
+        guard let cgImage = UIImage(named: "sc.png")?.cgImage else {
             fatalError("Failed to create cgimage")
         }
         let invoiceCIImage = CIImage(cgImage: cgImage)
