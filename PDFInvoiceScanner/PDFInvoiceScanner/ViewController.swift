@@ -21,9 +21,11 @@ class ViewController: UIViewController {
 
     let receiverKeywords = ["bankgiro", "postgiro", "mottagare", "bankgiro:"]
     let ocrKeywords = ["ocr-nummer", "ocr", "ocr/fakturanummer"]
+    let paymentKeywords = ["att betala", "belopp att betala"]
 
     let receiverRegex = #"\b([0-9,-]{8,})\b"#
     let ocrRegex = #"\b([0-9]{8,})\b"#
+    let paymentRegex = #"([1-9][0-9 ]+[0-9.,]+)"#
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,16 +42,22 @@ class ViewController: UIViewController {
                 let validatedOcrObservations = self.validatedObservations(among: observations,
                                                                           matching: self.ocrKeywords,
                                                                           regexLiteral: self.ocrRegex)
-
+                
+                // Filter out payments
+                let validatedPaymentObservations = self.validatedObservations(among: observations,
+                                                                              matching: self.paymentKeywords,
+                                                                              regexLiteral: self.paymentRegex,
+                                                                              shouldExtractExactMatch: true)
+                
                 print("Possible receivers: \(validatedReceiverObservations.map { $0.text })")
                 print("Possible ocr: \(validatedOcrObservations.map { $0.text })")
-
+                print("Possible payments: \(validatedPaymentObservations.map { $0.text })")
             }
         }
         textRecognitionRequest.recognitionLevel = .accurate
         textRecognitionRequest.usesLanguageCorrection = false
 
-        guard let cgImage = UIImage(named: "sc.png")?.cgImage else {
+        guard let cgImage = UIImage(named: "fakturabild1_ftg.jpg")?.cgImage else {
             fatalError("Failed to create cgimage")
         }
         let invoiceCIImage = CIImage(cgImage: cgImage)
@@ -62,33 +70,53 @@ class ViewController: UIViewController {
             print(error)
         }
     }
+    
+    // MARK: Extraction
+    
+    func extract(regexLiteral: StringLiteralType, from validatedObservations: [ValidatedObservation]) -> [ValidatedObservation] {
+        var observations: [ValidatedObservation] = []
+        for observation in validatedObservations {
+            guard let range = observation.text.range(of: regexLiteral, options: .regularExpression) else { continue }
+            let text = String(observation.text[range])
+            let validatedObservation = ValidatedObservation(observation: observation.observation, text: text)
+            observations.append(validatedObservation)
+        }
+        
+        return observations
+    }
 
     // MARK: Validation
 
     func validatedObservations(among observations: [VNRecognizedTextObservation],
                                matching keywords: [String],
-                               regexLiteral: StringLiteralType) -> [ValidatedObservation] {
+                               regexLiteral: StringLiteralType,
+                               shouldExtractExactMatch: Bool = false) -> [ValidatedObservation] {
         let keywordObservations = self.findObservations(matchingKeywords: keywords, among: observations)
         var validatedObservations: [ValidatedObservation] = []
         for keywordObservation in keywordObservations {
             let closestObservationToRight = self.findObservationClosestToTheRight(of: keywordObservation, among: observations)
             let closestObservationBelow = self.findObservationClosestBelow(of: keywordObservation, among: observations)
             let validObservations = self.validatedObservation(regularExpressionLiteral: regexLiteral,
-                                                              among: [closestObservationToRight, closestObservationBelow])
+                                                              among: [closestObservationToRight, closestObservationBelow],
+                                                              shouldExtractExactMatch: shouldExtractExactMatch)
             validatedObservations.append(contentsOf: validObservations)
         }
         return validatedObservations
     }
 
-    func validatedObservation(regularExpressionLiteral: StringLiteralType, among observations: [VNRecognizedTextObservation?]) -> [ValidatedObservation] {
+    func validatedObservation(regularExpressionLiteral: StringLiteralType, among observations: [VNRecognizedTextObservation?], shouldExtractExactMatch: Bool = false) -> [ValidatedObservation] {
         var validatedObservations: [ValidatedObservation] = []
         for observation in observations {
             guard let observation = observation,
-                let text = observation.topCandidates(1).first?.string else {
+                var text = observation.topCandidates(1).first?.string else {
                     continue
             }
 
-            if text.range(of: regularExpressionLiteral, options: .regularExpression) != nil {
+            if let regexRange = text.range(of: regularExpressionLiteral, options: .regularExpression) {
+                if shouldExtractExactMatch {
+                    text = String(text[regexRange])
+                }
+                
                 let validatedObservation = ValidatedObservation(observation: observation, text: text)
                 validatedObservations.append(validatedObservation)
             }
