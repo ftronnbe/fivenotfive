@@ -84,7 +84,7 @@ class PDFScannerUtility {
     let ocrRegex = #"\b([0-9]{8,})\b"#
     let dueDateRegex = #"\b([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))\b"#
     let invoiceNumberRegex = #"\b([0-9]{1,15})\b"#
-    let paymentRegex = #"([1-9][0-9., ]+)"#
+    let paymentRegex = #"\b[\d,. ]+\b"#
 
     func extractInvoiceInformation(image: UIImage) {
         guard let cgImage = image.cgImage else {
