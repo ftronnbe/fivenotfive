@@ -19,11 +19,11 @@ struct ValidatedObservation {
 
 class ViewController: UIViewController {
 
-    let receiverKeywords = ["bankgiro", "postgiro", "mottagare"]
+    let receiverKeywords = ["bankgiro", "postgiro", "mottagare", "bankgiro:"]
     let ocrKeywords = ["ocr-nummer", "ocr", "ocr/fakturanummer"]
 
-    let receiverRegularExpressionLiteral = #"\b([0-9,-]{8,})\b"#
-    let ocrRegularExpressionLiteral = #"\b([0-9]{8,})\b"#
+    let receiverRegex = #"\b([0-9,-]{8,})\b"#
+    let ocrRegex = #"\b([0-9]{8,})\b"#
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,26 +32,14 @@ class ViewController: UIViewController {
             if let observations = request.results as? [VNRecognizedTextObservation] {
 
                 // Filter out receiver observations
-                let receiverKeywordObservations = self.findObservations(matchingKeywords: self.receiverKeywords, among: observations)
-                var validatedReceiverObservations: [ValidatedObservation] = []
-                for receiverKeywordObservation in receiverKeywordObservations {
-                    let closestObservationToRight = self.findObservationClosestToTheRight(of: receiverKeywordObservation, among: observations)
-                    let closestObservationBelow = self.findObservationClosestBelow(of: receiverKeywordObservation, among: observations)
-                    let validObservations = self.validatedObservation(regularExpressionLiteral: self.receiverRegularExpressionLiteral,
-                                                                      among: [closestObservationToRight, closestObservationBelow])
-                    validatedReceiverObservations.append(contentsOf: validObservations)
-                }
+                let validatedReceiverObservations = self.validatedObservations(among: observations,
+                                                                               matching: self.receiverKeywords,
+                                                                               regexLiteral: self.receiverRegex)
 
                 // Filter out OCR
-                let ocrKeywordObservations = self.findObservations(matchingKeywords: self.ocrKeywords, among: observations)
-
-                var validatedOcrObservations: [ValidatedObservation] = []
-                for ocrKeywordObservation in ocrKeywordObservations {
-                    let closestObservationToRight = self.findObservationClosestToTheRight(of: ocrKeywordObservation, among: observations)
-                    let closestObservationBelow = self.findObservationClosestBelow(of: ocrKeywordObservation, among: observations)
-                    let validObservations = self.validatedObservation(regularExpressionLiteral: self.ocrRegularExpressionLiteral, among: [closestObservationToRight, closestObservationBelow])
-                    validatedOcrObservations.append(contentsOf:validObservations)
-                }
+                let validatedOcrObservations = self.validatedObservations(among: observations,
+                                                                          matching: self.ocrKeywords,
+                                                                          regexLiteral: self.ocrRegex)
 
                 print("Possible receivers: \(validatedReceiverObservations.map { $0.text })")
                 print("Possible ocr: \(validatedOcrObservations.map { $0.text })")
@@ -75,14 +63,29 @@ class ViewController: UIViewController {
         }
     }
 
-    // MARK: Receiver
+    // MARK: Validation
+
+    func validatedObservations(among observations: [VNRecognizedTextObservation],
+                               matching keywords: [String],
+                               regexLiteral: StringLiteralType) -> [ValidatedObservation] {
+        let keywordObservations = self.findObservations(matchingKeywords: keywords, among: observations)
+        var validatedObservations: [ValidatedObservation] = []
+        for keywordObservation in keywordObservations {
+            let closestObservationToRight = self.findObservationClosestToTheRight(of: keywordObservation, among: observations)
+            let closestObservationBelow = self.findObservationClosestBelow(of: keywordObservation, among: observations)
+            let validObservations = self.validatedObservation(regularExpressionLiteral: regexLiteral,
+                                                              among: [closestObservationToRight, closestObservationBelow])
+            validatedObservations.append(contentsOf: validObservations)
+        }
+        return validatedObservations
+    }
 
     func validatedObservation(regularExpressionLiteral: StringLiteralType, among observations: [VNRecognizedTextObservation?]) -> [ValidatedObservation] {
         var validatedObservations: [ValidatedObservation] = []
         for observation in observations {
             guard let observation = observation,
                 let text = observation.topCandidates(1).first?.string else {
-                continue
+                    continue
             }
 
             if text.range(of: regularExpressionLiteral, options: .regularExpression) != nil {
