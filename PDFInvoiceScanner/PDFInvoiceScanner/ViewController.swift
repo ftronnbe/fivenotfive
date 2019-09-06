@@ -21,11 +21,17 @@ class ViewController: UIViewController {
 
     let receiverKeywords = ["bankgiro", "postgiro", "mottagare", "bankgiro:"]
     let ocrKeywords = ["ocr-nummer", "ocr", "ocr/fakturanummer"]
+    let dueDateKeywords = ["förfallodatum", "förfallodatum:", "förfallodag", "förfallodag:",
+                           "forfallodatum", "forfallodatum:", "forfallodag", "forfallodag:"]
+    let invoiceNumberKeywords = ["fakturanummer", "fakturanr", "fakturanummer:", "fakturanr:"]
     let paymentKeywords = ["att betala", "belopp att betala"]
 
     let receiverRegex = #"\b([0-9,-]{8,})\b"#
     let ocrRegex = #"\b([0-9]{8,})\b"#
+    let dueDateRegex = #"\b([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))\b"#
+    let invoiceNumberRegex = #"\b([0-9]{1,15})\b"#
     let paymentRegex = #"([1-9][0-9 ]+[0-9.,]+)"#
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +49,16 @@ class ViewController: UIViewController {
                                                                           matching: self.ocrKeywords,
                                                                           regexLiteral: self.ocrRegex)
                 
+                // Filter out due date
+                let validatedDueDateObservations = self.validatedObservations(among: observations,
+                                                                              matching: self.dueDateKeywords,
+                                                                              regexLiteral: self.dueDateRegex)
+
+                // Filter out invoice number
+                let validatedInvoiceNumberObservations = self.validatedObservations(among: observations,
+                                                                                    matching: self.invoiceNumberKeywords,
+                                                                                    regexLiteral: self.invoiceNumberRegex)
+                
                 // Filter out payments
                 let validatedPaymentObservations = self.validatedObservations(among: observations,
                                                                               matching: self.paymentKeywords,
@@ -51,6 +67,8 @@ class ViewController: UIViewController {
                 
                 print("Possible receivers: \(validatedReceiverObservations.map { $0.text })")
                 print("Possible ocr: \(validatedOcrObservations.map { $0.text })")
+                print("Possible due dates: \(validatedDueDateObservations.map { $0.text })")
+                print("Possible invoice numbers: \(validatedInvoiceNumberObservations.map { $0.text })")
                 print("Possible payments: \(validatedPaymentObservations.map { $0.text })")
             }
         }
@@ -104,7 +122,9 @@ class ViewController: UIViewController {
         return validatedObservations
     }
 
-    func validatedObservation(regularExpressionLiteral: StringLiteralType, among observations: [VNRecognizedTextObservation?], shouldExtractExactMatch: Bool = false) -> [ValidatedObservation] {
+    func validatedObservation(regularExpressionLiteral: StringLiteralType,
+                              among observations: [VNRecognizedTextObservation?],
+                              shouldExtractExactMatch: Bool = false) -> [ValidatedObservation] {
         var validatedObservations: [ValidatedObservation] = []
         for observation in observations {
             guard let observation = observation,
