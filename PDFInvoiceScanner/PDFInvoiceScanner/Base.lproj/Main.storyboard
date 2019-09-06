@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.16" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14865.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.12"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14819.2"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -9,16 +10,59 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="PDFInvoiceScanner" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" xcode11CocoaTouchSystemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VlG-xc-LCe">
+                                <rect key="frame" x="20" y="802" width="75" height="30"/>
+                                <state key="normal" title="Pick Image"/>
+                                <connections>
+                                    <action selector="pickImageTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="o4L-2J-DEP"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S9K-B0-2cb">
+                                <rect key="frame" x="285" y="802" width="109" height="30"/>
+                                <state key="normal" title="Scan Document"/>
+                                <connections>
+                                    <action selector="scanDocumentTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="nAd-k5-csq"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S7s-K6-Uwa">
+                                <rect key="frame" x="153.5" y="761" width="107" height="30"/>
+                                <state key="normal" title="Process Invoice"/>
+                                <connections>
+                                    <action selector="processImageTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4TM-z5-Nhk"/>
+                                </connections>
+                            </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="57T-B8-oAb">
+                                <rect key="frame" x="10" y="44" width="394" height="707"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="S9K-B0-2cb" secondAttribute="bottom" constant="30" id="3Cl-sH-y5F"/>
+                            <constraint firstItem="S7s-K6-Uwa" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="DyF-wh-nPZ"/>
+                            <constraint firstItem="57T-B8-oAb" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="Goh-4W-ISR"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="S9K-B0-2cb" secondAttribute="trailing" constant="20" id="UhU-Ej-zAg"/>
+                            <constraint firstItem="S7s-K6-Uwa" firstAttribute="top" secondItem="57T-B8-oAb" secondAttribute="bottom" constant="10" id="ZXe-8j-KNL"/>
+                            <constraint firstItem="57T-B8-oAb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="bty-f0-Yte"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="VlG-xc-LCe" secondAttribute="bottom" constant="30" id="eL5-4V-Rw4"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="57T-B8-oAb" secondAttribute="trailing" constant="10" id="oaG-cU-kD6"/>
+                            <constraint firstItem="VlG-xc-LCe" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="szm-RX-Sp7"/>
+                            <constraint firstItem="S9K-B0-2cb" firstAttribute="top" secondItem="S7s-K6-Uwa" secondAttribute="bottom" constant="11" id="zOX-0Q-aPO"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="imageView" destination="57T-B8-oAb" id="dBU-RR-yYU"/>
+                        <outlet property="processImageButton" destination="S7s-K6-Uwa" id="xDg-Si-58f"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="137.68115942028987" y="93.75"/>
         </scene>
     </scenes>
 </document>
