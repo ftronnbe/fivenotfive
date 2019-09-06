@@ -27,6 +27,7 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: PDFScannerUtilityDelegate {
+    
     func pdfScannerUtilityDidBeginProcessing(_ pdfScannerUtility: PDFScannerUtility) {
         print("began processing")
     }
