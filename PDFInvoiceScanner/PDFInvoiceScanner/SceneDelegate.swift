@@ -1,8 +1,8 @@
 //
 //  SceneDelegate.swift
-//  FiveNotFive
+//  PDFInvoiceScanner
 //
-//  Created by Filip Tronnberg on 2019-08-30.
+//  Created by Filip Tronnberg on 2019-09-05.
 //  Copyright © 2019 Filip Tronnberg. All rights reserved.
 //
 
