@@ -24,13 +24,13 @@ class ViewController: UIViewController {
     let dueDateKeywords = ["förfallodatum", "förfallodatum:", "förfallodag", "förfallodag:",
                            "forfallodatum", "forfallodatum:", "forfallodag", "forfallodag:"]
     let invoiceNumberKeywords = ["fakturanummer", "fakturanr", "fakturanummer:", "fakturanr:"]
-    let paymentKeywords = ["att betala", "belopp att betala"]
+    let paymentKeywords = ["att betala", "belopp att betala", "totalt", "belopp"]
 
     let receiverRegex = #"\b([0-9,-]{8,})\b"#
     let ocrRegex = #"\b([0-9]{8,})\b"#
     let dueDateRegex = #"\b([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))\b"#
     let invoiceNumberRegex = #"\b([0-9]{1,15})\b"#
-    let paymentRegex = #"([1-9][0-9 ]+[0-9.,]+)"#
+    let paymentRegex = #"([1-9][0-9., ]+)"#
 
 
     override func viewDidLoad() {
