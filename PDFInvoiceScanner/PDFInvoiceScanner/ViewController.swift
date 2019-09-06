@@ -23,10 +23,12 @@ class ViewController: UIViewController {
     let ocrKeywords = ["ocr-nummer", "ocr", "ocr/fakturanummer"]
     let dueDateKeywords = ["förfallodatum", "förfallodatum:", "förfallodag", "förfallodag:",
                            "forfallodatum", "forfallodatum:", "forfallodag", "forfallodag:"]
+    let invoiceNumberKeywords = ["fakturanummer", "fakturanr", "fakturanummer:", "fakturanr:"]
 
     let receiverRegex = #"\b([0-9,-]{8,})\b"#
     let ocrRegex = #"\b([0-9]{8,})\b"#
     let dueDateRegex = #"\b([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))\b"#
+    let invoiceNumberRegex = #"\b([0-9]{1,15})\b"#
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,9 +51,15 @@ class ViewController: UIViewController {
                                                                               matching: self.dueDateKeywords,
                                                                               regexLiteral: self.dueDateRegex)
 
+                // Filter out invoice number
+                let validatedInvoiceNumberObservations = self.validatedObservations(among: observations,
+                                                                                    matching: self.invoiceNumberKeywords,
+                                                                                    regexLiteral: self.invoiceNumberRegex)
+
                 print("Possible receivers: \(validatedReceiverObservations.map { $0.text })")
                 print("Possible ocr: \(validatedOcrObservations.map { $0.text })")
                 print("Possible due dates: \(validatedDueDateObservations.map { $0.text })")
+                print("Possible invoice numbers: \(validatedInvoiceNumberObservations.map { $0.text })")
 
             }
         }
