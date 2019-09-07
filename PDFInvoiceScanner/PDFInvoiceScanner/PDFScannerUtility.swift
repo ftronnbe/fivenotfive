@@ -79,10 +79,10 @@ class PDFScannerUtility {
     let invoiceNumberKeywords = ["fakturanummer", "fakturanr"]
     let paymentKeywords = ["att betala", "belopp att betala", "totalt", "belopp"]
 
-    let receiverRegex = #"\b([0-9,-]{8,})\b"#
-    let ocrRegex = #"\b([0-9]{8,})\b"#
-    let dueDateRegex = #"\b([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))\b"#
-    let invoiceNumberRegex = #"\b([0-9]{1,15})\b"#
+    let receiverRegex = #"\b^([0-9,-]{8,})\b"#
+    let ocrRegex = #"\b^([0-9]{8,})\b"#
+    let dueDateRegex = #"\b^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))\b"#
+    let invoiceNumberRegex = #"\b^([0-9]{1,15})\b"#
     let paymentRegex = #"\b[\d,. ]+\b"#
 
     func extractInvoiceInformation(image: UIImage) {
