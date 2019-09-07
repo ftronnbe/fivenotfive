@@ -220,7 +220,14 @@ class PDFScannerUtility {
             guard let text = observation.topCandidates(1).first?.string else {
                 return false
             }
-            return keywords.contains(text.lowercased())
+            
+            for keyword in keywords {
+                if text.lowercased(with: Locale(identifier: "sv_SE")).contains(keyword) {
+                    return true
+                }
+            }
+            
+            return false
         }
     }
 
