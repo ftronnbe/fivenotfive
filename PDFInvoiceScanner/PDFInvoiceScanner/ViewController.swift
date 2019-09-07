@@ -15,19 +15,32 @@ import CoreImage
 class ViewController: UIViewController {
 
     let pdfScannerUtility = PDFScannerUtility()
-
+    @IBOutlet var imageView: UIImageView!
+    @IBOutlet var processImageButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         pdfScannerUtility.delegate = self
-
-        let image = UIImage(named: "sc.png")!
-        pdfScannerUtility.extractInvoiceInformation(image: image)
    }
     
+    @IBAction func pickImageTapped(_ sender: Any) {
+        // TODO: Bring up image picker
+    }
+
+    @IBAction func scanDocumentTapped(_ sender: Any) {
+        // TODO: Bring up document scanner
+    }
+
+    @IBAction func processImageTapped(_ sender: Any) {
+        guard let image = imageView.image else {
+            return
+        }
+        pdfScannerUtility.extractInvoiceInformation(image: image)
+    }
 }
 
 extension ViewController: PDFScannerUtilityDelegate {
-    
+
     func pdfScannerUtilityDidBeginProcessing(_ pdfScannerUtility: PDFScannerUtility) {
         print("began processing")
     }
@@ -41,4 +54,8 @@ extension ViewController: PDFScannerUtilityDelegate {
         }
     }
 
+}
+
+extension ViewController: UIImagePickerControllerDelegate {
+    
 }
