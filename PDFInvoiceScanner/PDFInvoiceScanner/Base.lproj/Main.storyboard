@@ -56,8 +56,8 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
-                        <outlet property="imageView" destination="57T-B8-oAb" id="dBU-RR-yYU"/>
-                        <outlet property="processImageButton" destination="S7s-K6-Uwa" id="xDg-Si-58f"/>
+                        <outlet property="imageView" destination="57T-B8-oAb" id="iDP-eT-kxh"/>
+                        <outlet property="processImageButton" destination="S7s-K6-Uwa" id="nU6-iv-JyU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

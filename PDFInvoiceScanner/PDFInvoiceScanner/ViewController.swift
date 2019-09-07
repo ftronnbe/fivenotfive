@@ -15,6 +15,8 @@ import CoreImage
 class ViewController: UIViewController {
 
     let pdfScannerUtility = PDFScannerUtility()
+
+    var pickerController: UIImagePickerController?
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var processImageButton: UIButton!
     
@@ -24,7 +26,13 @@ class ViewController: UIViewController {
    }
     
     @IBAction func pickImageTapped(_ sender: Any) {
-        // TODO: Bring up image picker
+        let pickerController = UIImagePickerController()
+        pickerController.delegate = self
+        pickerController.allowsEditing = true
+        pickerController.mediaTypes = ["public.image"]
+        pickerController.sourceType = .photoLibrary
+        present(pickerController, animated: true, completion: nil)
+        self.pickerController = pickerController
     }
 
     @IBAction func scanDocumentTapped(_ sender: Any) {
@@ -48,14 +56,27 @@ extension ViewController: PDFScannerUtilityDelegate {
     func pdfScannerUtility(_ pdfScannerUtility: PDFScannerUtility, didFinishProcessing result: Result<PdfValidatedObservations, Error>) {
         switch result {
         case .failure(let error):
-            print("Error: \(error)")
+            showAlert(title: "error", message: error.localizedDescription)
         case .success(let validatedObservations):
-            print(validatedObservations)
+            showAlert(title: "Finished", message: validatedObservations.debugDescription)
         }
+    }
+
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+
+        }))
+        present(alert, animated: true, completion: nil)
     }
 
 }
 
-extension ViewController: UIImagePickerControllerDelegate {
-    
+extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[.editedImage] as? UIImage else {
+            return
+        }
+        self.imageView.image = image
+    }
 }
