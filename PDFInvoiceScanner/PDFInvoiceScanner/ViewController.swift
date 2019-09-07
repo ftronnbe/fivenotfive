@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 import Vision
+import VisionKit
 import Accelerate
 import CoreImage
 
@@ -28,7 +29,7 @@ class ViewController: UIViewController {
     @IBAction func pickImageTapped(_ sender: Any) {
         let pickerController = UIImagePickerController()
         pickerController.delegate = self
-        pickerController.allowsEditing = true
+        pickerController.allowsEditing = false
         pickerController.mediaTypes = ["public.image"]
         pickerController.sourceType = .photoLibrary
         present(pickerController, animated: true, completion: nil)
@@ -36,7 +37,13 @@ class ViewController: UIViewController {
     }
 
     @IBAction func scanDocumentTapped(_ sender: Any) {
-        // TODO: Bring up document scanner
+        guard VNDocumentCameraViewController.isSupported else {
+            showAlert(title: "No support", message: "This device doesn't support document scanning")
+            return
+        }
+        let scannerViewController = VNDocumentCameraViewController()
+        scannerViewController.delegate = self
+        present(scannerViewController, animated: true)
     }
 
     @IBAction func processImageTapped(_ sender: Any) {
@@ -64,9 +71,8 @@ extension ViewController: PDFScannerUtilityDelegate {
 
     func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-
-        }))
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alert.addAction(okAction)
         present(alert, animated: true, completion: nil)
     }
 
@@ -74,9 +80,41 @@ extension ViewController: PDFScannerUtilityDelegate {
 
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        guard let image = info[.editedImage] as? UIImage else {
+        guard let pickedImage = info[.originalImage] as? UIImage else {
             return
         }
-        self.imageView.image = image
+        imageView.image = pickedImage
+        picker.dismiss(animated: true)
+    }
+
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+}
+
+extension ViewController: VNDocumentCameraViewControllerDelegate {
+    func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
+        // Process the scanned pages
+        guard scan.pageCount > 0 else {
+            showAlert(title: "Missing image", message: "Failed to find scanned image")
+            return
+        }
+        let scannedImage = scan.imageOfPage(at: 0)
+        imageView.image = scannedImage
+
+        // You are responsible for dismissing the controller.
+        controller.dismiss(animated: true)
+    }
+
+    func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
+        controller.dismiss(animated: true)
+    }
+
+    func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
+        // You should handle errors appropriately in your app.
+        showAlert(title: "Scanning error", message: error.localizedDescription)
+
+        // You are responsible for dismissing the controller.
+        controller.dismiss(animated: true)
     }
 }
