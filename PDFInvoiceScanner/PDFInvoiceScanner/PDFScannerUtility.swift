@@ -178,6 +178,15 @@ class PDFScannerUtility {
         let keywordObservations = self.findObservations(matchingKeywords: keywords, among: observations)
         var validatedObservations: [ValidatedObservation] = []
         for keywordObservation in keywordObservations {
+
+            // Check if the keyword observation contains the value itself
+            if let validatedKeywordObservation = validatedObservationContained(in: keywordObservation,
+                                                                               regularExpressionLiteral: regexLiteral,
+                                                                               type: type) {
+                validatedObservations.append(validatedKeywordObservation)
+            }
+
+            // Nearby elements to keyword
             let closestObservationToRight = self.findObservationClosestToTheRight(of: keywordObservation, among: observations)
             let closestObservationBelow = self.findObservationClosestBelow(of: keywordObservation, among: observations)
             let validObservations = self.validatedObservation(regularExpressionLiteral: regexLiteral,
@@ -186,7 +195,29 @@ class PDFScannerUtility {
                                                               shouldExtractExactMatch: shouldExtractExactMatch)
             validatedObservations.append(contentsOf: validObservations)
         }
+
         return validatedObservations
+    }
+
+    func validatedObservationContained(in keywordObservation: VNRecognizedTextObservation,
+                                       regularExpressionLiteral: StringLiteralType,
+                                       type: ValidatedObservation.FieldType) -> ValidatedObservation? {
+        guard let text = keywordObservation.topCandidates(1).first?.string else {
+            return nil
+        }
+        
+        let words = text.components(separatedBy: " ")
+        guard words.count == 2 else {
+            return nil
+        }
+
+        for word in words {
+            if word.range(of: regularExpressionLiteral, options: .regularExpression) != nil {
+                return ValidatedObservation(observation: keywordObservation, text: word, type: type)
+            }
+        }
+
+        return nil
     }
 
     func validatedObservation(regularExpressionLiteral: StringLiteralType,
@@ -219,7 +250,13 @@ class PDFScannerUtility {
             guard let text = observation.topCandidates(1).first?.string else {
                 return false
             }
-            
+
+            // Det inses lätt att det är unresonable for a matched text to be in the middle of a sentence longer than three words.
+            let numberOfWords = text.components(separatedBy: " ").count
+            if numberOfWords > 3 {
+                return false
+            }
+
             for keyword in keywords {
                 if text.lowercased(with: Locale(identifier: "sv_SE")).contains(keyword) {
                     return true
@@ -267,7 +304,6 @@ class PDFScannerUtility {
     func findObservationClosestBelow(of rootObservation: VNRecognizedTextObservation, among observations: [VNRecognizedTextObservation]) -> VNRecognizedTextObservation? {
 
         let bottomLeft = rootObservation.bottomLeft
-
 
         var shortestDistanceBelow: CGFloat = .infinity
         var closestObservationBelow: VNRecognizedTextObservation? = nil
