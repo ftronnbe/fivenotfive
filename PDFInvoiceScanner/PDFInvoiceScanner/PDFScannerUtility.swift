@@ -73,11 +73,10 @@ class PDFScannerUtility {
 
     weak var delegate: PDFScannerUtilityDelegate?
     
-    let receiverKeywords = ["bankgiro", "postgiro", "mottagare", "bankgiro:"]
-    let ocrKeywords = ["ocr-nummer", "ocr", "ocr/fakturanummer"]
-    let dueDateKeywords = ["förfallodatum", "förfallodatum:", "förfallodag", "förfallodag:",
-                           "forfallodatum", "forfallodatum:", "forfallodag", "forfallodag:"]
-    let invoiceNumberKeywords = ["fakturanummer", "fakturanr", "fakturanummer:", "fakturanr:"]
+    let receiverKeywords = ["bankgiro", "postgiro", "mottagare", "bg", "pg"]
+    let ocrKeywords = ["ocr"]
+    let dueDateKeywords = ["forfallo", "förfallo"]
+    let invoiceNumberKeywords = ["fakturanummer", "fakturanr"]
     let paymentKeywords = ["att betala", "belopp att betala", "totalt", "belopp"]
 
     let receiverRegex = #"\b([0-9,-]{8,})\b"#
@@ -126,7 +125,7 @@ class PDFScannerUtility {
             let validatedDueDateObservations = self.validatedObservations(among: observations,
                                                                           matching: self.dueDateKeywords,
                                                                           regexLiteral: self.dueDateRegex,
-                type: .dueDate)
+                                                                          type: .dueDate)
 
             // Filter out invoice number
             let validatedInvoiceNumberObservations = self.validatedObservations(among: observations,
