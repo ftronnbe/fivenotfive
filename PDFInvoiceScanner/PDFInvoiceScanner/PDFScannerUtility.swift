@@ -75,7 +75,7 @@ class PDFScannerUtility {
     
     let receiverKeywords = ["bankgiro", "postgiro", "mottagare", "bg", "pg"]
     let ocrKeywords = ["ocr"]
-    let dueDateKeywords = ["forfallo", "förfallo"]
+    let dueDateKeywords = ["forfallo", "förfallo", "betalningsdag", "tillhanda"]
     let invoiceNumberKeywords = ["fakturanummer", "fakturanr"]
     let paymentKeywords = ["att betala", "belopp att betala", "totalt", "belopp"]
 
