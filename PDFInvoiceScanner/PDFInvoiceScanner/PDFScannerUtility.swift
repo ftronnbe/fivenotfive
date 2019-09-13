@@ -80,7 +80,7 @@ class PDFScannerUtility {
     let paymentKeywords = ["att betala", "belopp att betala", "totalt", "belopp"]
 
     let receiverRegex = #"\b^([0-9,-]{8,})\b"#
-    let ocrRegex = #"\b^([0-9]{8,})\b"#
+    let ocrRegex = #"\b^([0-9]{4,})\b"#
     let dueDateRegex = #"\b^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))\b"#
     let invoiceNumberRegex = #"\b^([0-9]{1,15})\b"#
     let paymentRegex = #"\b[\d,. ]+\b"#
@@ -205,9 +205,10 @@ class PDFScannerUtility {
         guard let text = keywordObservation.topCandidates(1).first?.string else {
             return nil
         }
-        
+
+        // Check for words like "Sista betalningsdag: 2013-02-28" but not entire sentences.
         let words = text.components(separatedBy: " ")
-        guard words.count == 2 else {
+        guard words.count > 1, words.count < 4 else {
             return nil
         }
 
